@@ -1,0 +1,9 @@
+[submodule "qml-extras"]
+	path = qml-extras
+	url = git@github.com:iBeliever/qml-extras.git
+[submodule "udata"]
+	path = udata
+	url = git@github.com:sonrisesoftware/udata.git
+[submodule "qml-material"]
+	path = qml-material
+	url = git@github.com:iBeliever/qml-material.git
