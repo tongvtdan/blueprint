@@ -4,47 +4,83 @@ import "../qml-material/ListItems" as ListItem
 import "../qml-extras"
 
 Rectangle {
-    id: inbox
+    id: projectsView
 
     property int margins: units.dp(100)
 
+    property var platforms: ["GitHub", "Assembla", "Launchpad"]
+
     Flickable {
+        id: flickable
         anchors.fill: parent
 
-        ColumnFlow {
-            anchors {
-                left: parent.left
-                right: parent.right
-                top: parent.top
+        contentWidth: width
+        contentHeight: content.height
 
-                margins: units.dp(16)/2
+        Column {
+            id: content
+            width: parent.width
+
+            Item {
+                width: 1
+                height: units.dp(8)
             }
 
-            columnWidth: units.dp(300)
+            Repeater {
+                model: projectsView.platforms
 
-            model: 4
+                delegate: Column {
+                    width: parent.width
 
-            delegate: Item {
-                height: card.height + units.dp(16)
+                    ListItem.Header {
+                        text: modelData
+                    }
 
-                Material.Card {
-                    id: card
-                    width: parent.width - units.dp(16)
-                    height: column.height
+                    ColumnFlow {
+                        anchors {
+                            left: parent.left
+                            right: parent.right
 
-                    anchors.centerIn: parent
+                            margins: units.dp(16)/2
+                        }
 
-                    Column {
-                        id: column
-                        width: parent.width
+                        columnWidth: units.dp(300)
 
-                        ListItem.Subtitled {
-                            text: "Blueprint"
-                            subText: "iBeliever/blueprint"
+                        model: 4
+
+                        delegate: Item {
+                            height: card.height + units.dp(16)
+
+                            Material.Card {
+                                id: card
+                                width: parent.width - units.dp(16)
+                                height: column.height
+
+                                anchors.centerIn: parent
+
+                                Column {
+                                    id: column
+                                    width: parent.width
+
+                                    ListItem.Subtitled {
+                                        text: "Blueprint"
+                                        subText: "iBeliever/blueprint"
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
+
+            Item {
+                width: 1
+                height: units.dp(8)
+            }
         }
+    }
+
+    Material.Scrollbar {
+        flickableItem: flickable
     }
 }
