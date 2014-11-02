@@ -3,13 +3,15 @@ import "bubblewrap"
 import "udata"
 import "model"
 import "qml-material" as Material
+import "qml-material/Transitions" as MaterialTransitions
 import "qml-material/ListItems" as ListItem
 import "qml-extras"
 import "ui"
+import "udata"
 
 import io.thp.pyotherside 1.3
 
-Material.Application {
+Material.PageApplication {
     id: app
 
     title: "Blueprint"
@@ -26,15 +28,16 @@ Material.Application {
 
     theme {
         primary: "#00bcd4"
+        primaryDark: "#0097a7"
         secondary: "#ffeb3b"
     }
 
-    Material.Toolbar {
-        id: toolbar
-        z: 2
+    initialPage: page
+
+    Material.Page {
+        id: page
 
         title: "Blueprint"
-        backgroundColor: theme.primary
 
         tabs: [
             {
@@ -58,31 +61,26 @@ Material.Application {
             },
 
             Material.Action {
+                name: "Search"
+                iconName: "action/search"
+            },
+
+            Material.Action {
                 name: "Refresh"
                 iconName: "navigation/refresh"
             },
 
-            Material.Action {
-                name: "User account"
-                iconName: "social/person"
-            },
+//            Material.Action {
+//                name: "User account"
+//                iconName: "social/person"
+//            },
 
             Material.Action {
                 name: "Settings"
                 iconName: "action/settings"
+                onTriggered: pageStack.push(Qt.resolvedUrl("ui/SettingsPage.qml"))
             }
         ]
-    }
-
-    Rectangle {
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: toolbar.bottom
-            bottom: parent.bottom
-        }
-
-        color: "#fafafa"
 
         Material.TabView {
             id: tabView
@@ -112,6 +110,18 @@ Material.Application {
 
                     model: [
                         {
+                            title: "Projects",
+                            subTitle: 'Your Favorites',
+                            color: 'gray',
+                            icon: "awesome/cube",
+                            items: [
+                                {
+                                    text: "Super Cool App",
+                                    subText: "iBeliever/demo-app"
+                                }
+
+                            ]
+                        },{
                             title: "Issues",
                             subTitle: "Assigned to You",
                             color: colors.red,
@@ -170,7 +180,12 @@ Material.Application {
                             width: parent.width - units.dp(16)
                             height: column.height
 
-                            anchors.centerIn: parent
+                            anchors {
+                                left: parent.left
+                                right: parent.right
+                                top: parent.top
+                                margins: units.dp(16)/2
+                            }
 
                             Column {
                                 id: column
@@ -302,6 +317,18 @@ Material.Application {
     function htmlColor(text, color) {
         print("<font color=\"%1\">%2</font>".arg(color).arg(text))
         return "<font color=\"%1\">%2</font>".arg(color).arg(text)
+    }
+
+    GitHubService {
+        id: github
+        _db: database
+    }
+
+    Database {
+        id: database
+        name: "com.sonrisesoftware.blueprint"
+        description: "Blueprint"
+        modelPath: Qt.resolvedUrl('model')
     }
 }
 

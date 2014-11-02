@@ -2,7 +2,7 @@ import QtQuick 2.0
 import "../qml-material" as Material
 import "../qml-material/ListItems" as ListItem
 
-Rectangle {
+Item {
     id: inbox
 
     property int margins: units.dp(100)

@@ -4,7 +4,10 @@ import "../bubblewrap"
 
 Bubble {
     _type: 'Repository'
-    _properties: ['name', 'bubble_id', 'json']
+    _properties: ['type', 'projectId', 'json', 'name']
 
+    property string projectId
+    property string type
+    property string json
     property string name
 }

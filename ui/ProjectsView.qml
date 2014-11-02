@@ -2,13 +2,16 @@ import QtQuick 2.0
 import "../qml-material" as Material
 import "../qml-material/ListItems" as ListItem
 import "../qml-extras"
+import "../qml-material/transitions"
+import "../udata"
+import "../model"
 
-Rectangle {
+Item {
     id: projectsView
 
     property int margins: units.dp(100)
 
-    property var platforms: ["GitHub", "Assembla", "Launchpad"]
+    property var platforms: ["github", "assembla", "launchpad"]
 
     Flickable {
         id: flickable
@@ -19,7 +22,10 @@ Rectangle {
 
         Column {
             id: content
-            width: parent.width
+            anchors {
+                left: parent.left
+                right: parent.right
+            }
 
             Item {
                 width: 1
@@ -30,7 +36,10 @@ Rectangle {
                 model: projectsView.platforms
 
                 delegate: Column {
-                    width: parent.width
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                    }
 
                     ListItem.Header {
                         text: modelData
@@ -44,28 +53,65 @@ Rectangle {
                             margins: units.dp(16)/2
                         }
 
-                        columnWidth: units.dp(300)
+                        columnWidth: units.dp(250)
 
-                        model: 4
+                        model: query
+
+                        Query {
+                            id: query
+                            _db: database
+
+                            type: 'Project'
+                            sortBy: 'name'
+                            predicate: "id IN (SELECT projectId FROM Repository " +
+                                       "WHERE type = '%1')".arg(modelData)
+                        }
 
                         delegate: Item {
                             height: card.height + units.dp(16)
+
+                            property Project project: modelData
 
                             Material.Card {
                                 id: card
                                 width: parent.width - units.dp(16)
                                 height: column.height
 
-                                anchors.centerIn: parent
+                                anchors {
+                                    left: parent.left
+                                    right: parent.right
+                                    top: parent.top
+                                    margins: units.dp(16)/2
+                                }
 
                                 Column {
                                     id: column
                                     width: parent.width
 
                                     ListItem.Subtitled {
-                                        text: "Blueprint"
+                                        text: project.title
                                         subText: "iBeliever/blueprint"
+                                        secondaryItem: Material.AwesomeIcon {
+                                            anchors {
+                                                right: parent.right
+                                            }
+
+                                            property bool favorite: index == 0 || index == 2
+
+                                            name: favorite ? 'star' : 'star-o'
+                                            size: parent.height * 0.8
+                                            color: favorite ? theme.secondary : 'gray'
+                                        }
                                     }
+                                }
+
+                                Material.Ink {
+                                    anchors.fill: parent
+                                    onClicked: pageStack.pushFrom(
+                                                   card,
+                                                   Qt.resolvedUrl('ProjectPage.qml'),
+                                                   {project: project}
+                                               )
                                 }
                             }
                         }

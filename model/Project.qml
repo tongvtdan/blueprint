@@ -24,9 +24,13 @@ Document {
     id: project
     _type: "Project"
 
-    _properties: ["title"]
+    _properties: ["title", "subTitle", "favorite"]
 
     property string title
+
+    property string subTitle
+
+    property bool favorite
 
     onRemoved: {
         // TODO: Remove all plugins and content
